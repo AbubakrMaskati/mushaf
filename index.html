@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mushaf - Simple Quran Reader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8D6E63;
+      --primary-dark: #5D4037;
+      --primary-light: #D7CCC8;
+      --accent: #A1887F;
+      --bg-light: #F5F1E6;
+      --text-light: #3E2723;
+      --text-dark: #FFFFFF;
+      --bg-dark: #3E2723;
+      --border-light: #D7CCC8;
+      --bg-dark-mode: #121212;
+      --text-dark-mode: #E0E0E0;
+      --border-dark-mode: #333333;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    
+    body.dark-mode {
+      background-color: var(--bg-dark-mode);
+      color: var(--text-dark-mode);
+    }
+    
+    .header {
+      background-color: white;
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    body.dark-mode .header {
+      background-color: #1A1A1A;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      cursor: pointer;
+    }
+    
+    body.dark-mode .logo {
+      color: var(--primary-light);
+    }
+    
+    .controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .control-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+    
+    .control-btn:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    body.dark-mode .control-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .main-content {
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .welcome-title {
+      font-size: 36px;
+      color: var(--primary-dark);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    body.dark-mode .welcome-title {
+      color: var(--primary-light);
+    }
+    
+    .welcome-subtitle {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: var(--accent);
+    }
+    
+    body.dark-mode .welcome-subtitle {
+      color: var(--primary-light);
+    }
+    
+    .bismillah {
+      font-family: 'Scheherazade New', serif;
+      font-size: 48px;
+      text-align: center;
+      margin: 40px 0;
+      direction: rtl;
+      color: var(--primary);
+    }
+    
+    .features-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .feature-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    
+    body.dark-mode .feature-card {
+      background-color: #1A1A1A;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-mode .feature-card:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .feature-icon {
+      font-size: 36px;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    
+    .feature-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+    
+    body.dark-mode .feature-title {
+      color: var(--primary-light);
+    }
+    
+    .feature-description {
+      font-size: 14px;
+      color: var(--text-light);
+      opacity: 0.9;
+    }
+    
+    body.dark-mode .feature-description {
+      color: var(--text-dark-mode);
+    }
+    
+    .search-box {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    body.dark-mode .search-box {
+      background-color: #1A1A1A;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 5px;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
+      font-size: 16px;
+    }
+    
+    body.dark-mode .search-box input {
+      color: var(--text-dark-mode);
+    }
+    
+    .search-box input:focus {
+      outline: none;
+    }
+    
+    .search-box svg {
+      color: var(--primary);
+      margin-right: 10px;
+    }
+    
+    .surah-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .surah-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    body.dark-mode .surah-card {
+      background-color: #1A1A1A;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .surah-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-mode .surah-card:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .surah-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .surah-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .surah-name-arabic {
+      font-family: 'Scheherazade New', serif;
+      font-size: 24px;
+      text-align: right;
+      color: var(--primary);
+    }
+    
+    .surah-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--primary-dark);
+    }
+    
+    body.dark-mode .surah-name {
+      color: var(--primary-light);
+    }
+    
+    .surah-translation {
+      font-size: 14px;
+      color: var(--text-light);
+      opacity: 0.8;
+    }
+    
+    body.dark-mode .surah-translation {
+      color: var(--text-dark-mode);
+    }
+    
+    .surah-verses {
+      font-size: 12px;
+      margin-top: 10px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    body.dark-mode .surah-verses {
+      color: var(--primary-light);
+    }
+    
+    .quran-reader {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    body.dark-mode .quran-reader {
+      background-color: #1A1A1A;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .surah-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    body.dark-mode .surah-header {
+      border-bottom-color: var(--border-dark-mode);
+    }
+    
+    .surah-title {
+      font-size: 32px;
+      color: var(--primary-dark);
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+    
+    body.dark-mode .surah-title {
+      color: var(--primary-light);
+    }
+    
+    .surah-info {
+      font-size: 16px;
+      color: var(--accent);
+    }
+    
+    body.dark-mode .surah-info {
+      color: var(--primary-light);
+    }
+    
+    .verse {
+      margin: 30px 0;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+    }
+    
+    body.dark-mode .verse {
+      border-bottom-color: var(--border-dark-mode);
+    }
+    
+    .verse:last-child {
+      border-bottom: none;
+    }
+    
+    .verse-arabic {
+      font-family: 'Scheherazade New', serif;
+      font-size: 32px;
+      line-height: 1.8;
+      text-align: right;
+      direction: rtl;
+      margin-bottom: 15px;
+      padding-right: 45px;
+    }
+    
+    .verse-translation {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-light);
+      margin-top: 15px;
+      padding-right: 45px;
+      border-top: 1px dashed var(--border-light);
+      padding-top: 15px;
+    }
+    
+    body.dark-mode .verse-translation {
+      color: var(--text-dark-mode);
+      border-top-color: var(--border-dark-mode);
+    }
+    
+    .verse-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 600;
+      position: absolute;
+      right: 0;
+      top: 5px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 50px 0;
+    }
+    
+    .spinner {
+      border: 4px solid rgba(141, 110, 99, 0.2);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
+    
+    .screen {
+      display: none;
+    }
+    
+    .screen.active {
+      display: block;
+    }
+    
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 10px 0;
+      margin-bottom: 20px;
+    }
+    
+    .back-button svg {
+      margin-right: 8px;
+    }
+    
+    .translation-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .translation-toggle-btn {
+      background: none;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-weight: 500;
+    }
+    
+    .translation-toggle-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .settings-panel {
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+    
+    body.dark-mode .settings-panel {
+      background-color: #1A1A1A;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .settings-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+    }
+    
+    body.dark-mode .settings-title {
+      color: var(--primary-light);
+    }
+    
+    .settings-item {
+      margin-bottom: 20px;
+    }
+    
+    .settings-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    .font-size-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-light);
+      border-radius: 8px;
+      padding: 5px;
+    }
+    
+    body.dark-mode .font-size-control {
+      background-color: #333;
+    }
+    
+    .font-size-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .font-size-btn:hover {
+      background-color: rgba(141, 110, 99, 0.1);
+    }
+    
+    body.dark-mode .font-size-btn:hover {
+      background-color: rgba(215, 204, 200, 0.1);
+    }
+    
+    .font-size-value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px;
+      }
+      
+      .features-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .quran-reader {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      
+      .welcome-title {
+        font-size: 28px;
+      }
+      
+      .bismillah {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo" id="logo">Al-Mushaf</div>
+    <div class="controls">
+      <button class="control-btn" id="dark-mode-btn" title="Toggle Dark Mode">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+  
+  <div class="main-content">
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+      <div class="welcome-section">
+        <h1 class="welcome-title">Welcome to Al-Mushaf</h1>
+        <p class="welcome-subtitle">Read, reflect, and connect with the Noble Quran</p>
+      </div>
+      
+      <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      
+      <div class="features-section">
+        <div class="feature-card" id="read-quran-btn">
+          <div class="feature-icon">📖</div>
+          <h3 class="feature-title">Read Quran</h3>
+          <p class="feature-description">Browse and read all 114 surahs of the Noble Quran</p>
+        </div>
+        
+        <div class="feature-card" id="bookmarks-btn">
+          <div class="feature-icon">🔖</div>
+          <h3 class="feature-title">Bookmarks</h3>
+          <p class="feature-description">Access your saved verses and continue your reading journey</p>
+        </div>
+        
+        <div class="feature-card" id="settings-btn">
+          <div class="feature-icon">⚙️</div>
+          <h3 class="feature-title">Settings</h3>
+          <p class="feature-description">Customize your reading experience</p>
+        </div>
+      </div>
+      
+      <div class="search-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" placeholder="Search for a surah..." id="quick-search-input">
+      </div>
+      
+      <div id="quick-search-results" class="surah-list"></div>
+    </div>
+    
+    <!-- Surah List Screen -->
+    <div id="surah-list-screen" class="screen">
+      <button class="back-button" id="surah-list-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Home
+      </button>
+      
+      <h2 class="welcome-title">Browse Surahs</h2>
+      <div class="search-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" placeholder="Search for a surah..." id="surah-search-input">
+      </div>
+      
+      <div id="surah-list" class="surah-list"></div>
+    </div>
+    
+    <!-- Quran Reader Screen -->
+    <div id="quran-reader-screen" class="screen">
+      <button class="back-button" id="quran-reader-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Surahs
+      </button>
+      
+      <div class="quran-reader">
+        <div id="surah-header" class="surah-header"></div>
+        
+        <div id="bismillah-reader" class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        
+        <div class="translation-toggle">
+          <button id="show-translation-btn" class="translation-toggle-btn active">Show Translation</button>
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+          <div class="spinner"></div>
+          <p>Loading surah...</p>
+        </div>
+        
+        <div id="verses-list"></div>
+      </div>
+    </div>
+    
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen">
+      <button class="back-button" id="settings-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Home
+      </button>
+      
+      <h2 class="welcome-title">Settings</h2>
+      
+      <div class="settings-panel">
+        <h3 class="settings-title">Display</h3>
+        
+        <div class="settings-item">
+          <div class="settings-label">
+            <span>Dark Mode</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="dark-mode-toggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="settings-item">
+          <div class="settings-label">
+            <span>Show Translations</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="show-translations-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="settings-panel">
+        <h3 class="settings-title">Text Size</h3>
+        
+        <div class="settings-item">
+          <div class="settings-label">
+            <span>Arabic Font Size</span>
+          </div>
+          <div class="font-size-control">
+            <button class="font-size-btn" id="arabic-font-decrease">-</button>
+            <span class="font-size-value" id="arabic-font-size">Medium</span>
+            <button class="font-size-btn" id="arabic-font-increase">+</button>
+          </div>
+        </div>
+        
+        <div class="settings-item">
+          <div class="settings-label">
+            <span>Translation Font Size</span>
+          </div>
+          <div class="font-size-control">
+            <button class="font-size-btn" id="translation-font-decrease">-</button>
+            <span class="font-size-value" id="translation-font-size">Medium</span>
+            <button class="font-size-btn" id="translation-font-increase">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast" class="toast"></div>
+  
+  <script>
+    // DOM Elements
+    const logo = document.getElementById('logo');
+    const homeScreen = document.getElementById('home-screen');
+    const surahListScreen = document.getElementById('surah-list-screen');
+    const quranReaderScreen = document.getElementById('quran-reader-screen');
+    const settingsScreen = document.getElementById('settings-screen');
+    const readQuranBtn = document.getElementById('read-quran-btn');
+    const bookmarksBtn = document.getElementById('bookmarks-btn');
+    const settingsBtn = document.getElementById('settings-btn');
+    const surahListBack = document.getElementById('surah-list-back');
+    const quranReaderBack = document.getElementById('quran-reader-back');
+    const settingsBack = document.getElementById('settings-back');
+    const surahList = document.getElementById('surah-list');
+    const quickSearchInput = document.getElementById('quick-search-input');
+    const quickSearchResults = document.getElementById('quick-search-results');
+    const surahSearchInput = document.getElementById('surah-search-input');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeBtn = document.getElementById('dark-mode-btn');
+    const showTranslationsToggle = document.getElementById('show-translations-toggle');
+    const showTranslationBtn = document.getElementById('show-translation-btn');
+    const arabicFontDecrease = document.getElementById('arabic-font-decrease');
+    const arabicFontIncrease = document.getElementById('arabic-font-increase');
+    const arabicFontSize = document.getElementById('arabic-font-size');
+    const translationFontDecrease = document.getElementById('translation-font-decrease');
+    const translationFontIncrease = document.getElementById('translation-font-increase');
+    const translationFontSize = document.getElementById('translation-font-size');
+    const bismillahReader = document.getElementById('bismillah-reader');
+    const surahHeader = document.getElementById('surah-header');
+    const loadingElement = document.getElementById('loading');
+    const versesList = document.getElementById('verses-list');
+    const toast = document.getElementById('toast');
+    
+    // State
+    let allSurahs = [];
+    let currentSurah = null;
+    let settings = JSON.parse(localStorage.getItem('settings')) || {
+      darkMode: false,
+      arabicFontSize: 'Medium',
+      translationFontSize: 'Medium',
+      showTranslations: true
+    };
+    
+    // Font size options
+    const fontSizes = ['Small', 'Medium', 'Large', 'X-Large'];
+    
+    // Initialize the app
+    async function initApp() {
+      // Apply saved settings
+      applySettings();
+      
+      // Fetch surahs
+      await fetchAllSurahs();
+      
+      // Set up event listeners
+      setupEventListeners();
+    }
+    
+    // Apply settings
+    function applySettings() {
+      // Dark mode
+      if (settings.darkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
+      }
+      
+      // Show translations
+      if (showTranslationsToggle) {
+        showTranslationsToggle.checked = settings.showTranslations !== false;
+      }
+      
+      // Update translation button text
+      updateTranslationButtonText();
+      
+      // Font sizes
+      arabicFontSize.textContent = settings.arabicFontSize || 'Medium';
+      translationFontSize.textContent = settings.translationFontSize || 'Medium';
+    }
+    
+    // Update translation button text
+    function updateTranslationButtonText() {
+      if (showTranslationBtn) {
+        if (settings.showTranslations) {
+          showTranslationBtn.textContent = 'Hide Translation';
+          showTranslationBtn.classList.add('active');
+        } else {
+          showTranslationBtn.textContent = 'Show Translation';
+          showTranslationBtn.classList.remove('active');
+        }
+      }
+    }
+    
+    // Set up event listeners
+    function setupEventListeners() {
+      // Logo click - return to home
+      logo.addEventListener('click', showScreen.bind(null, homeScreen));
+      
+      // Navigation buttons
+      readQuranBtn.addEventListener('click', showScreen.bind(null, surahListScreen));
+      bookmarksBtn.addEventListener('click', () => {
+        showToast('Bookmarks feature is not available in this version');
+      });
+      settingsBtn.addEventListener('click', showScreen.bind(null, settingsScreen));
+      
+      // Back buttons
+      surahListBack.addEventListener('click', showScreen.bind(null, homeScreen));
+      quranReaderBack.addEventListener('click', showScreen.bind(null, surahListScreen));
+      settingsBack.addEventListener('click', showScreen.bind(null, homeScreen));
+      
+      // Dark mode toggle
+      darkModeToggle.addEventListener('change', function() {
+        settings.darkMode = this.checked;
+        if (this.checked) {
+          document.body.classList.add('dark-mode');
+        } else {
+          document.body.classList.remove('dark-mode');
+        }
+        saveSettings();
+      });
+      
+      // Dark mode button
+      darkModeBtn.addEventListener('click', function() {
+        settings.darkMode = !settings.darkMode;
+        darkModeToggle.checked = settings.darkMode;
+        if (settings.darkMode) {
+          document.body.classList.add('dark-mode');
+        } else {
+          document.body.classList.remove('dark-mode');
+        }
+        saveSettings();
+      });
+      
+      // Show translations toggle
+      if (showTranslationsToggle) {
+        showTranslationsToggle.addEventListener('change', function() {
+          settings.showTranslations = this.checked;
+          updateTranslationButtonText();
+          toggleTranslations();
+          saveSettings();
+        });
+      }
+      
+      // Show/hide translation button
+      if (showTranslationBtn) {
+        showTranslationBtn.addEventListener('click', function() {
+          settings.showTranslations = !settings.showTranslations;
+          updateTranslationButtonText();
+          toggleTranslations();
+          saveSettings();
+        });
+      }
+      
+      // Arabic font size controls
+      arabicFontDecrease.addEventListener('click', () => changeFontSize('arabic', -1));
+      arabicFontIncrease.addEventListener('click', () => changeFontSize('arabic', 1));
+      
+      // Translation font size controls
+      translationFontDecrease.addEventListener('click', () => changeFontSize('translation', -1));
+      translationFontIncrease.addEventListener('click', () => changeFontSize('translation', 1));
+      
+      // Search inputs
+      quickSearchInput.addEventListener('input', () => filterSurahs(quickSearchInput, quickSearchResults));
+      surahSearchInput.addEventListener('input', () => filterSurahs(surahSearchInput, surahList));
+    }
+    
+    // Toggle translations visibility
+    function toggleTranslations() {
+      const translations = document.querySelectorAll('.verse-translation');
+      translations.forEach(translation => {
+        translation.style.display = settings.showTranslations ? 'block' : 'none';
+      });
+    }
+    
+    // Show a specific screen
+    function showScreen(screen) {
+      // Hide all screens
+      document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+      });
+      
+      // Show the requested screen
+      screen.classList.add('active');
+    }
+    
+    // Change font size
+    function changeFontSize(type, direction) {
+      let element;
+      
+      if (type === 'arabic') {
+        element = arabicFontSize;
+      } else if (type === 'translation') {
+        element = translationFontSize;
+      }
+      
+      const currentSize = element.textContent;
+      const currentIndex = fontSizes.indexOf(currentSize);
+      
+      let newIndex = currentIndex + direction;
+      if (newIndex < 0) newIndex = 0;
+      if (newIndex >= fontSizes.length) newIndex = fontSizes.length - 1;
+      
+      const newSize = fontSizes[newIndex];
+      element.textContent = newSize;
+      
+      if (type === 'arabic') {
+        settings.arabicFontSize = newSize;
+      } else if (type === 'translation') {
+        settings.translationFontSize = newSize;
+      }
+      
+      updateFontSizes();
+      saveSettings();
+    }
+    
+    // Update font sizes
+    function updateFontSizes() {
+      // Update Arabic font size
+      const arabicSize = settings.arabicFontSize;
+      let arabicFontPx;
+      
+      switch (arabicSize) {
+        case 'Small': arabicFontPx = '28px'; break;
+        case 'Medium': arabicFontPx = '32px'; break;
+        case 'Large': arabicFontPx = '36px'; break;
+        case 'X-Large': arabicFontPx = '42px'; break;
+        default: arabicFontPx = '32px';
+      }
+      
+      document.querySelectorAll('.verse-arabic').forEach(el => {
+        el.style.fontSize = arabicFontPx;
+      });
+      
+      // Update Translation font size
+      const translationSize = settings.translationFontSize;
+      let translationFontPx;
+      
+      switch (translationSize) {
+        case 'Small': translationFontPx = '14px'; break;
+        case 'Medium': translationFontPx = '16px'; break;
+        case 'Large': translationFontPx = '18px'; break;
+        case 'X-Large': translationFontPx = '20px'; break;
+        default: translationFontPx = '16px';
+      }
+      
+      document.querySelectorAll('.verse-translation').forEach(el => {
+        el.style.fontSize = translationFontPx;
+      });
+    }
+    
+    // Save settings to localStorage
+    function saveSettings() {
+      localStorage.setItem('settings', JSON.stringify(settings));
+    }
+    
+    // Show toast notification
+    function showToast(message, duration = 3000) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    }
+    
+    // Fetch all surahs from API
+    async function fetchAllSurahs() {
+      try {
+        const response = await fetch('https://api.quran.com/api/v4/chapters?language=en');
+        const data = await response.json();
+        
+        if (data.chapters) {
+          allSurahs = data.chapters.map(chapter => ({
+            number: chapter.id,
+            name: chapter.name_arabic,
+            englishName: chapter.name_simple,
+            englishNameTranslation: chapter.translated_name.name,
+            numberOfAyahs: chapter.verses_count
+          }));
+          
+          renderSurahList();
+        } else {
+          showToast('Failed to load surahs list');
+        }
+      } catch (error) {
+        console.error('Error fetching surahs:', error);
+        showToast('Failed to load surahs list. Please check your connection.');
+      }
+    }
+    
+    // Render surah list
+    function renderSurahList() {
+      surahList.innerHTML = '';
+      
+      allSurahs.forEach(surah => {
+        const surahCard = document.createElement('div');
+        surahCard.className = 'surah-card';
+        surahCard.dataset.number = surah.number;
+        
+        surahCard.innerHTML = `
+          <div class="surah-header-row">
+            <div class="surah-number">${surah.number}</div>
+            <div class="surah-name-arabic">${surah.name}</div>
+          </div>
+          <div class="surah-name">${surah.englishName}</div>
+          <div class="surah-translation">${surah.englishNameTranslation}</div>
+          <div class="surah-verses">${surah.numberOfAyahs} verses</div>
+        `;
+        
+        surahCard.addEventListener('click', () => {
+          loadSurah(surah.number);
+        });
+        
+        surahList.appendChild(surahCard);
+      });
+    }
+    
+    // Filter surahs based on search input
+    function filterSurahs(inputElement, resultsElement) {
+      const searchTerm = inputElement.value.toLowerCase();
+      
+      if (searchTerm.length === 0) {
+        if (resultsElement === quickSearchResults) {
+          resultsElement.innerHTML = '';
+          return;
+        }
+      }
+      
+      resultsElement.innerHTML = '';
+      
+      const filteredSurahs = allSurahs.filter(surah => {
+        const nameMatch = surah.englishName.toLowerCase().includes(searchTerm);
+        const translationMatch = surah.englishNameTranslation.toLowerCase().includes(searchTerm);
+        const numberMatch = surah.number.toString() === searchTerm;
+        
+        return nameMatch || translationMatch || numberMatch;
+      });
+      
+      // Limit results for quick search
+      const surahs = resultsElement === quickSearchResults ? 
+        filteredSurahs.slice(0, 6) : filteredSurahs;
+      
+      surahs.forEach(surah => {
+        const surahCard = document.createElement('div');
+        surahCard.className = 'surah-card';
+        surahCard.dataset.number = surah.number;
+        
+        surahCard.innerHTML = `
+          <div class="surah-header-row">
+            <div class="surah-number">${surah.number}</div>
+            <div class="surah-name-arabic">${surah.name}</div>
+          </div>
+          <div class="surah-name">${surah.englishName}</div>
+          <div class="surah-translation">${surah.englishNameTranslation}</div>
+          <div class="surah-verses">${surah.numberOfAyahs} verses</div>
+        `;
+        
+        surahCard.addEventListener('click', () => {
+          loadSurah(surah.number);
+        });
+        
+        resultsElement.appendChild(surahCard);
+      });
+    }
+    
+    // Load a specific surah
+    async function loadSurah(surahNumber) {
+      // Show quran reader screen
+      showScreen(quranReaderScreen);
+      
+      // Show loading
+      loadingElement.style.display = 'block';
+      versesList.innerHTML = '';
+      surahHeader.innerHTML = '';
+      
+      try {
+        // Get surah info
+        const surahInfo = allSurahs.find(s => s.number === parseInt(surahNumber));
+        if (!surahInfo) {
+          showToast('Surah not found');
+          return;
+        }
+        
+        currentSurah = surahInfo;
+        
+        // Update surah header
+        surahHeader.innerHTML = `
+          <h2 class="surah-title">${surahInfo.englishName}</h2>
+          <div class="surah-name-arabic" style="font-size: 36px; margin: 10px 0;">${surahInfo.name}</div>
+          <p class="surah-info">${surahInfo.englishNameTranslation} • ${surahInfo.numberOfAyahs} verses</p>
+        `;
+        
+        // Handle bismillah display based on surah number
+        if (parseInt(surahNumber) === 1 || parseInt(surahNumber) === 9) {
+          // For Al-Fatiha and At-Tawbah, hide the standalone bismillah
+          bismillahReader.style.display = 'none';
+        } else {
+          // All other surahs show the standalone bismillah
+          bismillahReader.style.display = 'block';
+        }
+        
+        // Fetch Arabic verses
+        const arabicResponse = await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${surahNumber}`);
+        const arabicData = await arabicResponse.json();
+        
+        if (!arabicData.verses) {
+          throw new Error('Failed to load Arabic text');
+        }
+        
+        // Fetch translations (Sahih International)
+        const translationResponse = await fetch(`https://api.quran.com/api/v4/quran/translations/20?chapter_number=${surahNumber}`);
+        const translationData = await translationResponse.json();
+        
+        if (!translationData.translations) {
+          throw new Error('Failed to load translations');
+        }
+        
+        // Combine Arabic and translation
+        const verses = arabicData.verses.map((verse, index) => {
+          const translation = translationData.translations[index] ? 
+            translationData.translations[index].text : 
+            'Translation not available';
+          
+          return {
+            number: verse.id,
+            numberInSurah: verse.verse_number,
+            text: verse.text_uthmani,
+            translation: translation
+          };
+        });
+        
+        // Render verses
+        renderVerses(verses);
+        
+      } catch (error) {
+        console.error('Error loading surah:', error);
+        showToast('Failed to load surah. Please try again.');
+        
+        versesList.innerHTML = `
+          <div style="padding: 20px; text-align: center;">
+            <h3 style="color: #c62828; margin-bottom: 15px;">Error Loading Surah</h3>
+            <p>There was a problem loading the surah. Please check your internet connection and try again.</p>
+            <button id="retry-button" style="padding: 10px 20px; background-color: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+              Retry
+            </button>
+          </div>
+        `;
+        
+        document.getElementById('retry-button')?.addEventListener('click', () => {
+          loadSurah(surahNumber);
+        });
+      } finally {
+        loadingElement.style.display = 'none';
+      }
+    }
+    
+    // Render verses
+    function renderVerses(verses) {
+      versesList.innerHTML = '';
+      
+      verses.forEach((verse, index) => {
+        // Use the verse number from API if available, otherwise use index+1
+        const verseNumber = verse.numberInSurah || (index + 1);
+        
+        const verseElement = document.createElement('div');
+        verseElement.className = 'verse';
+        verseElement.dataset.number = verseNumber;
+        
+        verseElement.innerHTML = `
+          <div class="verse-arabic">${verse.text}</div>
+          <div class="verse-translation" style="display: ${settings.showTranslations ? 'block' : 'none'}">
+            ${verse.translation}
+          </div>
+          <span class="verse-number">${verseNumber}</span>
+        `;
+        
+        versesList.appendChild(verseElement);
+      });
+      
+      // Apply font sizes
+      updateFontSizes();
+    }
+    
+    // Initialize the app
+    initApp();
+  </script>
+</body>
+</html>
